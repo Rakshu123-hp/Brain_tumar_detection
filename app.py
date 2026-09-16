@@ -22,7 +22,7 @@ HF_REPO_ID = "mvdu/brain-tumor-models"
 # PAGE CONFIG
 # =========================
 st.set_page_config(
-    page_title="Brain Tumor Detection",
+    page_title="Brain MRI Tumor Analysis",
     page_icon="🧠",
     layout="wide",
     initial_sidebar_state="expanded"
@@ -507,13 +507,18 @@ with st.sidebar:
 st.markdown("""
 <div class="app-header">
     <div class="brain-icon">🧠</div>
-    <h1>Brain Tumor Detection</h1>
+    <h1>Brain MRI Tumor Analysis</h1>
 </div>
-<p class="app-subtitle">Upload an MRI scan and choose a model from the sidebar to run the analysis.</p>
+<p class="app-subtitle">
+Compare deep learning models for brain MRI image classification.
+</p>
 """, unsafe_allow_html=True)
 
 # =========================
-# TABS
+st.info(
+    "This project compares Custom CNN, VGG16 and ResNet50 "
+    "for binary and multi-class brain MRI classification."
+)
 # =========================
 tab_detect, tab_compare = st.tabs(["🔍 Detection", "📊 Model Comparison"])
 
