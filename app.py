@@ -500,8 +500,7 @@ with st.sidebar:
         unsafe_allow_html=True
     )
 
-    st.markdown("<div class='disclaimer'>⚠️ This tool is for educational/research purposes only and is not a substitute for professional medical diagnosis.</div>", unsafe_allow_html=True)
-
+    
 # =========================
 # HEADER
 # =========================
