@@ -290,12 +290,11 @@ http://localhost:8501
 
 ---
 
-## ☁️ Deploying on Streamlit Community Cloud
+## ☁️ Deployment
 
-> ⚠️ **The Python version must be selected by hand in the dashboard.**
-> `tensorflow==2.20.0` ships wheels for **Python 3.9 - 3.13** only, while
-> Community Cloud builds with the newest Python it supports (currently 3.14).
-> On 3.14 the dependency install aborts and the deploy fails:
+> ⚠️ **Python 3.11 - 3.13 only.** `tensorflow==2.20.0` publishes wheels for
+> **Python 3.9 - 3.13** and nothing newer, so any host that builds on 3.14+
+> aborts with:
 >
 > ```text
 > ERROR: Could not find a version that satisfies the requirement tensorflow==2.20.0
@@ -303,11 +302,42 @@ http://localhost:8501
 > [..] installer returned a non-zero exit code
 > ```
 >
-> Platform files such as `runtime.txt` and `.python-version` are **ignored** by
-> Community Cloud, and the Python version of an existing app **cannot be changed
-> in place** — the app has to be deleted and redeployed.
+> How the interpreter gets pinned depends on the platform — see below.
 
-### Steps
+### Render (current deployment)
+
+The app is live at:
+
+```text
+https://brain-tumar-detection-rvja.onrender.com
+```
+
+Render **does** honour `.python-version`, so the `3.12` pinned in this repo is
+what keeps the build on a TensorFlow-compatible interpreter — no dashboard
+setting is needed.
+
+To redeploy:
+
+1. Push to `main`; Render rebuilds automatically.
+2. Watch the build log and confirm it reaches `Your service is live`.
+
+Operational notes:
+
+* The `Could not find cuda drivers` and `AVX2 FMA` lines in the log are
+  informational, not errors — TensorFlow falls back to CPU, which is expected
+  on Render's CPU instances.
+* The six `.h5` models are downloaded from Hugging Face on first use
+  (~401 MB in total), so the first prediction after a cold start can take a
+  while. Render's free tier also spins the service down after inactivity.
+
+### Streamlit Community Cloud
+
+> ⚠️ **The Python version must be selected by hand in the dashboard.**
+> Community Cloud ignores `runtime.txt`, `.python-version` and every other
+> file, and the Python version of an existing app **cannot be changed in
+> place** — the app has to be deleted and redeployed.
+
+#### Steps
 
 1. Push the repository to GitHub.
 2. On [share.streamlit.io](https://share.streamlit.io), open the app and choose
