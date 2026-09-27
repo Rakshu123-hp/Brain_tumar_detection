@@ -330,6 +330,24 @@ Operational notes:
   (~401 MB in total), so the first prediction after a cold start can take a
   while. Render's free tier also spins the service down after inactivity.
 
+#### Resource requirements
+
+The free tier is **not** sufficient for this app. It provides 512 MB of RAM,
+while TensorFlow plus one loaded model needs considerably more — the two
+ResNet50 `.h5` files alone are ~130 MB each. When the container exceeds its
+memory limit it is killed and restarted, which shows up in the browser as
+intermittent `Failed to fetch dynamically imported module` errors and `502`
+responses, even though the health endpoint passed moments earlier.
+
+* Use a **`starter` (1 GB)** instance at minimum; **`standard` (2 GB)** is safer.
+* Restrict the app to a single session so a second browser tab cannot start a
+  second Python process holding its own copy of TensorFlow and the model. Set
+  the Render start command to:
+
+  ```bash
+  streamlit run app.py --server.port $PORT --server.address 0.0.0.0 --server.maxSessions 1
+  ```
+
 ### Streamlit Community Cloud
 
 > ⚠️ **The Python version must be selected by hand in the dashboard.**

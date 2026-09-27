@@ -541,9 +541,13 @@ st.info(
 tab_detect, tab_compare = st.tabs(["🔍 Detection", "📊 Model Comparison"])
 
 # ---------- TAB 1: DETECTION ----------
+# The model is loaded lazily further down (only once an image is uploaded)
+# rather than at the top of this tab. Building TensorFlow and pulling
+# 1.5-130 MB of weights on *every* page view is what exhausts memory on
+# small hosts (e.g. Render's 512 MB free tier) and triggers OOM-restart
+# loops, which surface in the browser as intermittent
+# "Failed to fetch dynamically imported module" errors.
 with tab_detect:
-    model = load_model(info["file"])
-
     col_upload, col_result = st.columns([1, 1])
 
     with col_upload:
@@ -566,6 +570,10 @@ with tab_detect:
         if uploaded_file is None:
             st.write("Upload an image first to see the result here.")
         else:
+            # First actual prediction attempt, so the model is only downloaded
+            # and built now. @st.cache_resource keeps it resident afterwards,
+            # so repeat predictions with the same model stay instant.
+            model = load_model(info["file"])
             processed_image = preprocess_image(
                 image, info["img_size"], apply_crop=(info["task"] == "Binary")
             )
