@@ -179,7 +179,7 @@ Brain_tumar_detection/
 ├── app.py
 ├── brain_tumor_detection.ipynb
 ├── requirements.txt
-├── runtime.txt
+├── .python-version
 ├── LICENSE
 ├── README.md
 │
@@ -234,6 +234,12 @@ Brain_tumar_detection/
 
 ## 📦 Installation
 
+> ⚠️ **Requires Python 3.11 - 3.13.** `tensorflow==2.20.0` publishes wheels for
+> CPython 3.9 - 3.13 only, so `pip install -r requirements.txt` fails on
+> Python 3.14+ with
+> `ERROR: No matching distribution found for tensorflow==2.20.0`.
+> The intended version is recorded in `.python-version` (`3.12`).
+
 ### 1. Clone the repository
 
 ```bash
@@ -281,6 +287,42 @@ The application will open in your browser at:
 ```text
 http://localhost:8501
 ```
+
+---
+
+## ☁️ Deploying on Streamlit Community Cloud
+
+> ⚠️ **The Python version must be selected by hand in the dashboard.**
+> `tensorflow==2.20.0` ships wheels for **Python 3.9 - 3.13** only, while
+> Community Cloud builds with the newest Python it supports (currently 3.14).
+> On 3.14 the dependency install aborts and the deploy fails:
+>
+> ```text
+> ERROR: Could not find a version that satisfies the requirement tensorflow==2.20.0
+> ERROR: No matching distribution found for tensorflow==2.20.0
+> [..] installer returned a non-zero exit code
+> ```
+>
+> Platform files such as `runtime.txt` and `.python-version` are **ignored** by
+> Community Cloud, and the Python version of an existing app **cannot be changed
+> in place** — the app has to be deleted and redeployed.
+
+### Steps
+
+1. Push the repository to GitHub.
+2. On [share.streamlit.io](https://share.streamlit.io), open the app and choose
+   **Delete app**. (The Python version can only be chosen on a fresh deploy.)
+3. Click **Create app** → **Yup, I have an app**.
+4. Fill in the GitHub coordinates:
+   * Repository: `Rakshu123-hp/Brain_tumar_detection`
+   * Branch: `main`
+   * Main file path: `app.py`
+5. Click **Advanced settings** and set **Python version** to **3.12**.
+6. Click **Save**, then **Deploy**.
+7. Verify the build log contains `Using Python 3.12.x environment`.
+
+If the log still reports a different interpreter, the version was not applied —
+delete the app and repeat from step 3.
 
 ---
 

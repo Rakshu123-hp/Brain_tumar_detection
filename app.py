@@ -1,4 +1,22 @@
+import sys
+
 import streamlit as st
+
+# tensorflow==2.20.0 has no wheels for CPython 3.14+, so on those interpreters
+# the build either fails outright or the import below dies with a bare
+# ModuleNotFoundError. Fail early with an actionable message instead.
+if sys.version_info >= (3, 14):
+    st.error(
+        "⚠️ **Unsupported Python version**\n\n"
+        f"This app is running on Python {sys.version_info.major}.{sys.version_info.minor}, "
+        "but `tensorflow==2.20.0` only ships wheels for Python 3.9 - 3.13.\n\n"
+        "On Streamlit Community Cloud: delete the app, then redeploy it and set "
+        "**Python version = 3.12** under *Advanced settings* (the repo's "
+        "`runtime.txt` / `.python-version` files are ignored by the platform).\n\n"
+        "Locally: recreate the virtual environment with Python 3.12."
+    )
+    st.stop()
+
 import tensorflow as tf
 from tensorflow.keras import layers, models
 from tensorflow.keras.applications.resnet50 import ResNet50, preprocess_input as resnet50_preprocess

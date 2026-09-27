@@ -1,3 +1,14 @@
+# ---------------------------------------------------------------------------
+# Python version: 3.11 - 3.13 ONLY.
+# tensorflow==2.20.0 publishes wheels for CPython 3.9-3.13 and nothing else,
+# so on Python 3.14 (or newer) the install fails with
+#   "No matching distribution found for tensorflow==2.20.0"
+#
+# NOTE: Streamlit Community Cloud ignores `runtime.txt` and `.python-version`.
+# The interpreter is chosen ONLY in the app's "Advanced settings" at deploy
+# time, so it must be set to 3.12 there (and the app redeployed) - see the
+# "Deploying on Streamlit Community Cloud" section of README.md.
+# ---------------------------------------------------------------------------
 streamlit
 tensorflow==2.20.0
 numpy==2.1.3
